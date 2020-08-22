@@ -93,22 +93,68 @@ The four plots that you will need to construct are shown below.
 
 
 ### Plot 1
-
+data <- read.csv("household_power_consumption.txt", na.strings = "?", sep=";")
+data$Date<-as.Date(strptime(data$Date, "%d/%m/%Y"))
+sub <- subset(data, data$Date == as.Date("2007-02-01") | data$Date == as.Date("2007-02-02"))
+hist(sub$Global_active_power, main = "Global Active Power", xlab = "Global Active Power (kilowatts)", col = "red")
+dev.copy(png, file = "plot1.png")
+dev.off()
 
 ![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2.png) 
 
 
 ### Plot 2
+data <- read.csv("household_power_consumption.txt", na.strings = "?", sep=";")
+data$Date <- as.Date(strptime(data$Date, "%d/%m/%Y"))
+sub <- subset(data, data$Date == as.Date("2007-02-01") | data$Date == as.Date("2007-02-02"))
+tickmarks <- c(which(sub$Time == "00:00:00"),length(sub$Date))
+plot(sub$Global_active_power,type = "n", xlab = NA, ylab = "Global Active Power (kilowatts)", axes=F)
+axis(1, at = tickmarks, labels = c("Thu","Fri","Sat"))
+axis(2)
+lines(sub$Global_active_power)
+dev.copy(png, file = "plot2.png")
+dev.off()
 
 ![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3.png) 
 
 
 ### Plot 3
+data <- read.csv("household_power_consumption.txt", na.strings = "?", sep=";")
+data$Date <- as.Date(strptime(data$Date, "%d/%m/%Y"))
+sub <- subset(data, data$Date == as.Date("2007-02-01") | data$Date == as.Date("2007-02-02"))
+tickmarks <- c(which(sub$Time == "00:00:00"),length(sub$Date))
+sub$Sub_metering <- c(rep(0, nrow(sub)-1), max(sub$Sub_metering_1, sub$Sub_metering_2, sub$Sub_metering_3, na.rm = T))
+plot(sub$Sub_metering,type = "n", xlab = NA, ylab = "Energy sub metering", axes=F)
+lines(sub$Sub_metering_1)
+lines(sub$Sub_metering_2, col = "red")
+lines(sub$Sub_metering_3, col = "blue")
+axis(1, at = tickmarks, labels = c("Thu","Fri","Sat"))
+axis(2)
+legend("topright", col=c("black", "red", "blue"), legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), lwd = 1)
+dev.copy(png, file = "plot3.png")
+dev.off()
 
 ![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4.png) 
 
 
 ### Plot 4
+data <- read.csv("household_power_consumption.txt", na.strings = "?", sep=";")
+data$Date <- as.Date(strptime(data$Date, "%d/%m/%Y"))
+sub <- subset(data, data$Date == as.Date("2007-02-01") | data$Date == as.Date("2007-02-02"))
+tickmarks <- c(which(sub$Time == "00:00:00"),length(sub$Date))
+par(mfrow = c(2,2))
+source("plot2.R")
+plot(sub$Voltage,type = "n", xlab = "datatime", xlab = "Voltage", axes=F)
+axis(1, at = tickmarks, labels = c("Thu","Fri","Sat"))
+axis(2)
+lines(sub$Voltage)
+source("plot3.R")
+plot(sub$Global_reactive_power,type = "n", xlab = "datatime", axes=F)
+axis(1, at = tickmarks, labels = c("Thu","Fri","Sat"))
+axis(2)
+lines(sub$Global_reactive_power)
+dev.copy(png, file = "plot4.png")
+dev.off()
 
 ![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5.png) 
 
